@@ -15,9 +15,43 @@ public class Streak {
         this.lastCheckin = lastCheckin;
     }
 
-    public String getStreakId() { return streakId; }
-    public String getClientId() { return clientId; }
-    public int getCurrentStreak() { return currentStreak; }
-    public int getLongestStreak() { return longestStreak; }
-    public Timestamp getLastCheckin() { return lastCheckin; }
+    public String getStreakId() {
+        return streakId;
+    }
+
+    public void setStreakId(String streakId) {
+        this.streakId = streakId;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public int getCurrentStreak() {
+        return currentStreak;
+    }
+
+    public void setCurrentStreak(int currentStreak) {
+        this.currentStreak = currentStreak;
+    }
+
+    public int getLongestStreak() {
+        return longestStreak;
+    }
+
+    public void setLongestStreak(int longestStreak) {
+        this.longestStreak = longestStreak;
+    }
+
+    public Timestamp getLastCheckin() {
+        return lastCheckin;
+    }
+
+    public void setLastCheckin(Timestamp lastCheckin) {
+        this.lastCheckin = lastCheckin;
+    }
 }
