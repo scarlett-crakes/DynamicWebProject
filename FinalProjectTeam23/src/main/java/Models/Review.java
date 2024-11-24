@@ -11,16 +11,7 @@ public class Review {
     private String comment;
 
     public Review(UUID clientId, UUID trainerId, int rating, String comment) {
-        if (clientId == null || trainerId == null) {
-            throw new IllegalArgumentException("Client ID and Trainer ID cannot be null.");
-        }
-        if (rating < 1 || rating > 5) {
-            throw new IllegalArgumentException("Rating must be between 1 and 5.");
-        }
-        if (comment == null || comment.length() > 50) {
-            throw new IllegalArgumentException("Comment must not be null and must not exceed 50 characters.");
-        }
-        this.reviewId = UUID.randomUUID(); 
+        this.reviewId = UUID.randomUUID();
         this.clientId = clientId;
         this.trainerId = trainerId;
         this.rating = rating;
@@ -51,24 +42,44 @@ public class Review {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public boolean setRating(int rating) {
         if (rating < 1 || rating > 5) {
-            throw new IllegalArgumentException("Rating must be between 1 and 5.");
+            System.err.println("Invalid rating: Rating must be between 1 and 5.");
+            return false;
         }
         this.rating = rating;
+        return true;
     }
 
     public String getComment() {
         return comment;
     }
 
-    public void setComment(String comment) {
+    public boolean setComment(String comment) {
         if (comment == null || comment.length() > 50) {
-            throw new IllegalArgumentException("Comment must not be null and must not exceed 50 characters.");
+            System.err.println("Invalid comment: Must not be null and must not exceed 50 characters.");
+            return false;
         }
         this.comment = comment;
+        return true;
     }
 
+    public boolean validate() {
+        if (clientId == null || trainerId == null) {
+            System.err.println("Client ID and Trainer ID cannot be null.");
+            return false;
+        }
+        if (rating < 1 || rating > 5) {
+            System.err.println("Invalid rating: Rating must be between 1 and 5.");
+            return false;
+        }
+        if (comment == null || comment.length() > 50) {
+            System.err.println("Invalid comment: Must not be null and must not exceed 50 characters.");
+            return false;
+        }
+        return true;
+    }
+    
     //Review Implementation - For CLIENT ONLY
     //placeholder values used for the db connection (Not yet implemented)
     public boolean addReview(Connection dbConnection) {
@@ -77,16 +88,21 @@ public class Review {
             return false;
         }
 
+        if (!validate()) {
+            System.err.println("Review validation failed.");
+            return false;
+        }
+
         String sql = "INSERT INTO Review (review_ID, client_ID, trainer_ID, Rating, Comment) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement statement = dbConnection.prepareStatement(sql)) {
-            statement.setObject(1, reviewId);  
+            statement.setObject(1, reviewId); 
             statement.setObject(2, clientId); 
-            statement.setObject(3, trainerId);
-            statement.setInt(4, rating);     
-            statement.setString(5, comment); 
+            statement.setObject(3, trainerId); 
+            statement.setInt(4, rating); 
+            statement.setString(5, comment);
 
             int rowsAffected = statement.executeUpdate();
-            return rowsAffected > 0; 
+            return rowsAffected > 0;
         } catch (SQLException e) {
             System.err.println("Could not save the review to the database: " + e.getMessage());
             return false;
