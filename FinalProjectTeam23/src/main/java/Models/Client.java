@@ -1,4 +1,7 @@
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.UUID;
+import java.sql.Connection;
 
 public class Client extends User {
     private UUID clientID;
@@ -35,5 +38,24 @@ public class Client extends User {
     public void setWorkoutPlan(String workoutPlan) {
         this.workoutPlan = workoutPlan;
     }
+    
+    //Review Implementation - For CLIENT ONLY
+    //placeholder values used for the db connection (Not yet implemented)
+   public boolean addReview(UUID trainerID, int rating, String comment, Connection dbConnection) {
+	   String sql = "INSERT INTO Review (review_ID, client_ID, trainer_ID, Rating, Comment) VALUES (?, ?, ?, ?, ?)";
+	   try(PreparedStatement statement = dbConnection.preparedStatement(sql)){
+		   statement.setObject(1, UUID.randomUUID());
+		   statement.setObject(2, this.clientID);
+		   statement.setObject(3, trainerID);
+		   statement.setInt(4, rating);
+		   statement.setString(5,comment);
+		   
+		   int rowsAffected = statement.executeUpdate();
+		   return rowsAffected > 0;
+	   }catch (SQLException e) {
+		   System.err.println("Could not insert the review: " + e.getMessage());
+		   return false;
+	   }
+   }
 }
 
